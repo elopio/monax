@@ -1,0 +1,38 @@
+name: monax
+version: master
+summary: The Ecosystem Application Platform
+description: |
+  Monax is an application platform for building, testing, maintaining, and
+  operating applications built to run on an ecosystem level.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+plugs:
+  support:
+    interface: docker-support
+  privileged:
+    interface: docker-support
+    privileged-containers: true
+  docker-cli:
+    interface: docker
+  docker-executables:
+    content: docker-executables
+    default-provider: docker
+    interface: content
+    target: docker-env
+
+apps:
+  monax:
+    command: monax
+    plugs: [network, docker-executables, docker-cli]
+
+parts:
+  monax:
+    source: .
+    plugin: go
+    go-importpath: github.com/monax/monax
+    stage-packages: [docker.io]
+    after: [go]
+  go:
+    source-tag: go1.8.3
